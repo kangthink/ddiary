@@ -1,0 +1,9 @@
+FROM node:16-alpine
+
+RUN apk add git
+
+WORKDIR /ddiary
+
+ENV NODE_ENV=dev
+
+EXPOSE 3000
