@@ -6,3 +6,4 @@ Simple Diet Diary CLI Application
 - [x] ddiary diet delete
 - [x] firebase support
 - [x] config file `~/.ddary/config` support
+- [x] export diets as an image file
