@@ -1,5 +1,8 @@
+# build
+lib
+
 # dependencies
 node_modules
 
-# db
-sample_db.json
+# default db
+ddiary.db.json

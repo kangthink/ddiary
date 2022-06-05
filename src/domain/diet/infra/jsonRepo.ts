@@ -2,13 +2,20 @@ import { Result, success, failure } from "../../common/result";
 import { Diet } from "../entity/diet";
 import { Repo } from "../repo";
 import fs from "fs";
+import {
+  Ddate,
+  isSameMonth,
+  isSameToday,
+  isSameWeek,
+} from "../../common/ddate";
 
 export class JsonRepo implements Repo {
-  private db: any;
+  private db: { [key: string]: Diet } = {};
   private filepath: string;
 
   constructor(filepath: string) {
     this.filepath = filepath;
+    this._createJsonIfNotExists();
   }
 
   save(diet: Diet): Result {
@@ -31,21 +38,69 @@ export class JsonRepo implements Repo {
     if (!found) {
       return failure(`${id} Not found`);
     }
-    this._saveJson();
     return success(found);
   }
 
-  findByDDate(ddate: string): Result {
-    return failure("Not Implemented");
+  all(): Result {
+    this._loadJson();
+    const diets = [];
+    for (const k of Object.keys(this.db)) {
+      diets.push(this.db[k]);
+    }
+    return success(diets);
   }
 
-  _loadJson() {
+  findByDdateSameMonth(ddate: Ddate): Result {
+    this._loadJson();
+    const diets = [];
+    for (const k of Object.keys(this.db)) {
+      const diet = this.db[k];
+
+      if (isSameMonth(ddate, diet.eatenAt)) {
+        diets.push(diet);
+      }
+    }
+    return success(diets);
+  }
+  findByDdateSameWeek(ddate: Ddate): Result {
+    this._loadJson();
+    const diets = [];
+    for (const k of Object.keys(this.db)) {
+      const diet = this.db[k];
+
+      if (isSameWeek(ddate, diet.eatenAt)) {
+        diets.push(diet);
+      }
+    }
+    return success(diets);
+  }
+  findByDdateSameToday(ddate: Ddate): Result {
+    this._loadJson();
+    const diets = [];
+    for (const k of Object.keys(this.db)) {
+      const diet = this.db[k];
+
+      if (isSameToday(ddate, diet.eatenAt)) {
+        diets.push(diet);
+      }
+    }
+
+    return success(diets);
+  }
+
+  private _createJsonIfNotExists() {
+    if (!fs.existsSync(this.filepath)) {
+      fs.writeFileSync(this.filepath, "{}");
+    }
+  }
+
+  private _loadJson() {
     const rawdata = fs.readFileSync(this.filepath).toString();
     const db = JSON.parse(rawdata);
     this.db = db;
   }
 
-  _saveJson() {
+  private _saveJson() {
     const rawdata = JSON.stringify(this.db);
     fs.writeFileSync(this.filepath, rawdata);
   }

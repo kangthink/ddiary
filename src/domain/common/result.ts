@@ -14,7 +14,7 @@ export function success(value: any): Result {
 
 export function failure(error: any): Result {
   return {
-    isSuccess: true,
+    isSuccess: false,
     value: null,
     error: error,
   };
