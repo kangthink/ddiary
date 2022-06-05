@@ -1,6 +1,6 @@
 {
   "name": "ddiary",
-  "version": "1.0.0",
+  "version": "0.6.0",
   "license": "MIT",
   "description": "CLI Application for Diet Diary",
   "bin": {
